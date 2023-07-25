@@ -1,0 +1,43 @@
+<html>
+    <head>
+       <title>
+        App Store
+       </title>
+    </head>
+    
+    <body style="background-color:rgb(206, 118, 118);">
+      <center>
+        <div style="display: inline-block">
+            <button id="connectionButton" onclick="toggleConnection()">Wifi</button>
+
+            <script>
+                let isConnected = false;
+        
+                function toggleConnection() {
+                    isConnected = !isConnected;
+                    updateButton();
+                }
+        
+                function updateButton() {
+                    const button = document.getElementById('connectionButton');
+                    if (isConnected) {
+                        button.textContent = 'DisConnect';
+                    } else {
+                        button.textContent = 'Connect';
+                    }
+                }
+            </script>
+            <br>
+            <br>
+            <button onclick="alert('No devices found')">Bluetooth</button>
+            <br><br>
+            <button onclick="alert('Your screen time: Too much')">Screen time</button>
+        </div>
+        <div style="display: inline-block">
+          
+        </div>
+        <div style="display: inline-block">
+        </div>
+      </center>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<html>
+    <head>
+       <title>
+        OS
+       </title>
+    </head>
+    
+    <body style="background-color:rgb(206, 118, 118);">
+        <center>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            <br>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1jWv7BJSswTUbRmN9gymrXPYa2lVIYv-n1PjshlDvXA&s">
+            <br>
+            <br>
+
+            
+            <div>
+               
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 20px;
+      max-width: 300px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <label for="password">Enter Password:</label>
+    <input type="password" id="password" placeholder="Enter your password">
+    <button onclick="checkPassword()">Submit</button>
+    <p id="message"></p>
+  </div>
+  <script>
+    function checkPassword() {
+      const enteredPassword = document.getElementById('password').value;
+      const correctPassword = 'Corgi123';
+
+      if (enteredPassword === correctPassword) {
+        window.location.href = 'home.html';
+      } else {
+        document.getElementById('message').textContent = 'Incorrect password. Try again.';
+      }
+    }
+  </script>
+
+
+            </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+         <div id="refreshingDiv">
+            <p><span id='date-time'></span>.</p>
+        </div>
+
+    </center>
+    
+       
+        
+
+
+<script>
+var dt = new Date();
+document.getElementById('date-time').innerHTML=dt;
+</script>
+        
+    </body>
+</html>

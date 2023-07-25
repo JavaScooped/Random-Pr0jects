@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Paint Program</title>
+</head>
+<body>
+  <canvas id="paintCanvas" width="800" height="500" style="border: 1px solid black;"></canvas>
+  <div id="colorDisplay" style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 1px solid black;"></div>
+  <button id="resetButton" style="position: absolute; top: 50px; right: 10px;">Reset Screen</button>
+  <input type="range" id="brushSizeSlider" min="1" max="50" value="5" style="position: absolute; top: 100px; right: 10px; width: 100px;">
+  <label for="brushSizeSlider" style="position: absolute; top: 80px; right: 10px;">Brush Size</label>
+  <div id="brushSizeIndicator" style="position: absolute; top: 130px; right: 10px; width: 30px; height: 30px; border: 1px solid black; border-radius: 50%;"></div>
+
+  <script>
+    // Get the canvas element and context
+    const canvas = document.getElementById('paintCanvas');
+    const context = canvas.getContext('2d');
+
+    // List of possible colors, including the eraser (transparent color)
+    const colors = ['black', 'white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'brown', 'tan', 'rgba(0, 0, 0, 0)'];
+
+    // Variable to track the current color index
+    let currentColorIndex = 0;
+
+    // Variable to track if the mouse is clicked
+    let isDrawing = false;
+
+    // Variable to track if the spacebar is pressed (for eraser)
+    let isEraser = false;
+
+    // Variable to store the current brush size
+    let brushSize = 5;
+
+    // Variable to store the current drawing path (for eraser)
+    let drawingPath = [];
+
+    // Function to start drawing or erasing when the mouse is clicked
+    function startDrawing(event) {
+      if (isEraser) {
+        context.globalCompositeOperation = 'destination-out'; // Use the eraser
+        drawingPath.push({ x: event.clientX, y: event.clientY });
+      } else {
+        context.globalCompositeOperation = 'source-over'; // Use the current color for drawing
+      }
+
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      context.beginPath();
+      context.moveTo(x, y);
+    }
+
+    // Function to stop drawing when the mouse is released
+    function stopDrawing() {
+      isDrawing = false;
+      if (isEraser) {
+        drawingPath = [];
+      }
+    }
+
+    // Function to draw or erase on the canvas
+    function draw(event) {
+      if (!isDrawing) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      context.lineTo(x, y);
+      context.stroke();
+
+      if (isEraser) {
+        drawingPath.push({ x, y });
+      }
+    }
+
+    // Function to change the brush color when right mouse button is pressed
+    function changeBrushColor(event) {
+      event.preventDefault(); // Prevent the context menu from showing up
+      if (event.button === 2) {
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+        context.strokeStyle = colors[currentColorIndex];
+        updateColorDisplay(colors[currentColorIndex]);
+      }
+    }
+
+    // Function to update the color display square
+    function updateColorDisplay(color) {
+      const colorDisplay = document.getElementById('colorDisplay');
+      colorDisplay.style.backgroundColor = color;
+    }
+
+    // Function to clear the canvas (reset screen)
+    function resetScreen() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      drawingPath = [];
+    }
+
+    // Function to handle the spacebar press (toggle eraser mode)
+    function handleSpacebar(event) {
+      if (event.code === 'Space') {
+        isEraser = !isEraser;
+      }
+    }
+
+    // Function to set the brush size
+    function setBrushSize(size) {
+      brushSize = size;
+      context.lineWidth = size;
+      updateBrushSizeIndicator(size);
+    }
+
+    // Function to handle the "Ctrl+Z" (Undo) keyboard shortcut
+    function handleUndo(event) {
+      if (event.ctrlKey && event.code === 'KeyZ' && isEraser) {
+        if (drawingPath.length > 0) {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          drawingPath.pop(); // Remove the last point from the drawing path
+          redrawPath();
+        }
+      }
+    }
+
+    // Function to redraw the drawing path after undo
+    function redrawPath() {
+      context.beginPath();
+      context.moveTo(drawingPath[0].x, drawingPath[0].y);
+      for (let i = 1; i < drawingPath.length; i++) {
+        context.lineTo(drawingPath[i].x, drawingPath[i].y);
+      }
+      context.stroke();
+    }
+
+    // Function to update the brush size indicator circle
+    function updateBrushSizeIndicator(size) {
+      const brushSizeIndicator = document.getElementById('brushSizeIndicator');
+      brushSizeIndicator.style.width = `${size * 2}px`;
+      brushSizeIndicator.style.height = `${size * 2}px`;
+    }
+
+    // Set up event listeners
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('contextmenu', changeBrushColor); // Listen for the right mouse button click
+    document.addEventListener('keydown', handleSpacebar); // Listen for the spacebar press
+    document.addEventListener('keydown', handleUndo); // Listen for the "Ctrl+Z" keyboard shortcut
+
+    // Configure the drawing context
+    context.lineCap = 'round';
+    context.strokeStyle = colors[currentColorIndex];
+    setBrushSize(brushSize);
+
+    // Update the initial color display
+    updateColorDisplay(colors[currentColorIndex]);
+
+    // Set up the "Reset Screen" button click event
+    const resetButton = document.getElementById('resetButton');
+    resetButton.addEventListener('click', resetScreen);
+
+    // Set up the brush size slider change event
+    const brushSizeSlider = document.getElementById('brushSizeSlider');
+    brushSizeSlider.addEventListener('input', () => setBrushSize(brushSizeSlider.value));
+  </script>
+</body>
+</html>
